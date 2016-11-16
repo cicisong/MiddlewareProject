@@ -14,6 +14,7 @@ public class FinalUser {
 
 	String userName;
 	String address;
+//(TODO : droit are associated to one mailing list!!)
 	int rReading;
 	int rWrite;
 	

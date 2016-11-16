@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 public class UserDirectory {
 
 	public UserDirectory(){
-		System.out.println("toto");
 	}
 	
 //User	
@@ -45,14 +44,13 @@ public class UserDirectory {
   @Consumes({MediaType.TEXT_PLAIN})
 	public void addUser(@PathParam("username")String username, String password){
 	
-		System.out.println("addUser");
 		String address = username+"@gmail.com";
 		DirectoryManager.insertUserDB(username, password, address);
 		
 		int idUser = DirectoryManager.getUserIdDB(username);
-		ArrayList<Integer> liste = DirectoryManager.getMailListsIdDB();
+		Liste liste = DirectoryManager.getMailListsIdDB();
 		
-		for (Integer id : liste){
+		for (Integer id : liste.getListe()){
 			DirectoryManager.setRightsDB(idUser, id, 0, 0);
 		}
 	}
@@ -77,7 +75,6 @@ public class UserDirectory {
 	@Path("/alluser")
 	@Produces(MediaType.TEXT_XML)
 	public Users lookupAllUsers() throws IOException {
-		//System.out.println("all");
 		return DirectoryManager.getUsersDB();
 	}
 
@@ -89,7 +86,6 @@ public class UserDirectory {
 	@DELETE
 	@Path("/delete/{user}")
 	public void removeUser(@PathParam("user")String username) throws IOException{
-		System.out.println(username);
 		int id = DirectoryManager.getUserIdDB(username);
 		DirectoryManager.deleteUserDB(id);
 	
@@ -100,15 +96,13 @@ public class UserDirectory {
 //RIGHTS
 
 	
-/**REST : to add a mailing list
+/**REST : to create a mailing list
 *@param  name
 */	
 	@POST
 	@Path("/addML/{name}")
   @Consumes({MediaType.TEXT_PLAIN})
-	public void addUser(@PathParam("name")String name){
-	
-		System.out.println("addML");
+	public void addMailingList(@PathParam("name")String name){
 		DirectoryManager.insertMailinglistDB(name);
 
 	}
@@ -119,8 +113,10 @@ public class UserDirectory {
 	@GET
 	@Path("/allListsNames")
 	@Produces(MediaType.TEXT_XML)
-	public ArrayList<String> lookupAllMLNames() throws IOException {
-		return DirectoryManager.getMailListsNameDB();
+	public ListeString lookupAllMLNames() throws IOException {
+		
+		ListeString liste = DirectoryManager.getMailListsNameDB();
+		return liste;
 	}
 	
 /**REST : to list the id of all mailinglist
@@ -129,12 +125,12 @@ public class UserDirectory {
 	@GET
 	@Path("/allListsId")
 	@Produces(MediaType.TEXT_XML)
-	public ArrayList<Integer> lookupAllMLId() throws IOException {
+	public Liste lookupAllMLId() throws IOException {
 		return DirectoryManager.getMailListsIdDB();
 	}
 	
 	
-	/**REST : Look the reading right of a user (Reading and Writing)
+	/**REST : Look the reading right of a user 
 	* @param username
 	* @return a hashmap<idMailinglist, readingRight>
 	*/
@@ -142,13 +138,12 @@ public class UserDirectory {
 	@Path("/getrights/R/{user}")
 	@Produces(MediaType.TEXT_XML)
 	public Rights lookupAUserRRights(@PathParam("user")String username){
-		System.out.println("getAUserRights R");
 		return DirectoryManager.getUserRRsDB(username);
 	
 	}
 	
 	
-	/**REST : Look the writing right of a user (Reading and Writing)
+	/**REST : Look the writing right of a user
 	* @param username
 	* @return a hashmap<idMailinglist, writingRight>
 	*/

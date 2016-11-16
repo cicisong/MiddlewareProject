@@ -51,14 +51,13 @@ public class MailDirectory {
 	@Path("/mail/{id}")
 	@Produces(MediaType.TEXT_XML)
 	public Email readEmail(@PathParam("id")int id) throws IOException {
-		//System.out.println("all");
-		Email email = DirectoryManager.getAEmailDB(id);
-		DirectoryManager.setReadDB(email);
+		System.out.println("all");
+		DirectoryManager.setReadDB(id);
 		return DirectoryManager.getAEmailDB(id);
 	}
 	
 	
-/**REST : to create an email
+/**REST : to send an email
 *@param  username
 *@param  password
 *@param  address
@@ -89,8 +88,18 @@ public class MailDirectory {
 		int receiver = DirectoryManager.getUserIdDB(email.getReceiver());
 		String title = email.getTitre();
 		String body = email.getBody();
-		DirectoryManager.setReadDB(email);
+		DirectoryManager.setReadDB(idMail);
 
+	}
+	
+/**REST : to delete an email 
+* @param username 
+*/
+	@DELETE
+	@Path("/delete/{idMail}")
+	public void removeUser(@PathParam("idMail")int idMail) throws IOException{
+		DirectoryManager.deleteMailDB(idMail);
+	
 	}
 
 

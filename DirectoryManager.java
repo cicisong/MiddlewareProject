@@ -91,7 +91,7 @@ public class DirectoryManager {
 
 
 
-	/**To get one user from the database
+	/**To get one user from the database (TODO : droit are associated to one mailing list!!)
 	* @param username
 	* @return a user
 	*/
@@ -127,6 +127,8 @@ public class DirectoryManager {
 		try{
 
 			s = c.createStatement();
+			System.out.println("test");
+			System.out.println(user);
 			ResultSet rs = s.executeQuery("SELECT idUser FROM utilisateur WHERE username = '"+user+"'");
 			rs.next();
 			return rs.getInt("idUser");
@@ -368,11 +370,11 @@ public class DirectoryManager {
 	}
 	
 /**To get all the mailing lists id from the database
-* @return map of users
+* @return list of id
 */
-	public static ArrayList<Integer> getMailListsIdDB(){
+	public static Liste getMailListsIdDB(){
 		Statement s;
-		ArrayList<Integer> liste = new ArrayList<Integer> ();
+		Liste liste = new Liste ();
 
 		try{
 
@@ -380,7 +382,7 @@ public class DirectoryManager {
 			ResultSet rs = s.executeQuery("SELECT idMailingList FROM mailinglist");
 			while ( rs.next() ){
 			
-				liste.add(rs.getInt("idMailingList"));
+				liste.createListe(rs.getInt("idMailingList"));
  
  			}
  		
@@ -395,12 +397,35 @@ public class DirectoryManager {
 		return null; 
 	}
 	
+/**To get  the mailing list id from the database
+* @param mailinglist name
+* @return id of the mailinlist
+*/
+	public static int getMLIdDB(String name){
+		Statement s;
+
+		try{
+
+			s = c.createStatement();
+			ResultSet rs = s.executeQuery("SELECT idMailinglist FROM mailinglist WHERE name = '"+name+"'");
+			rs.next();		 					
+ 			return rs.getInt("idMailingList") ;
+ 		
+		}catch (SQLException e) {
+
+			System.out.println(e.getMessage());
+
+		}
+
+		return -1; 
+	}
+	
 /**To get all the mailing lists names from the database
 * @return map of users
 */
-	public static ArrayList<String> getMailListsNameDB(){
+	public static ListeString getMailListsNameDB(){
 		Statement s;
-		ArrayList<String> liste = new ArrayList<String> ();
+		ListeString liste = new ListeString ();
 
 		try{
 
@@ -408,7 +433,7 @@ public class DirectoryManager {
 			ResultSet rs = s.executeQuery("SELECT name FROM mailinglist");
 			while ( rs.next() ){
 			
-				liste.add(rs.getString("name"));
+				liste.createListeString(rs.getString("name"));
  
  			}
  		
@@ -466,10 +491,10 @@ public class DirectoryManager {
 		try{
 
 			s = c.createStatement();
-			ResultSet rs = s.executeQuery("SELECT idExpediteur,titre, texte, lu FROM mail WHERE idRecepteur = "+idReceiver);
+			ResultSet rs = s.executeQuery("SELECT idMail,idExpediteur,titre, texte, lu FROM mail WHERE idRecepteur = "+idReceiver);
 			while ( rs.next() ){
 			
-				Email email = new Email(getUserNameDB(rs.getInt("idExpediteur")), getUserNameDB(idReceiver),rs.getString("titre"), rs.getString("texte"), rs.getInt("lu"));
+				Email email = new Email(rs.getInt("idMail"), getUserNameDB(rs.getInt("idExpediteur")), getUserNameDB(idReceiver),rs.getString("titre"), rs.getString("texte"), rs.getInt("lu"));
 				liste.createEmail(email);
  
  			}
@@ -495,14 +520,13 @@ public class DirectoryManager {
 		try{
 
 			s = c.createStatement();
-			ResultSet rs = s.executeQuery("SELECT idExpediteur, idRecepteur, titre, texte, lu FROM mail WHERE idMail = "+idMail);
+			ResultSet rs = s.executeQuery("SELECT idMail,idExpediteur, idRecepteur, titre, texte, lu FROM mail WHERE idMail = "+idMail);
 			rs.next();			
-			Email email = new Email(getUserNameDB(rs.getInt("idExpediteur")), getUserNameDB(rs.getInt("idRecepteur")),rs.getString("titre"), rs.getString("texte"), rs.getInt("lu"));
+			Email email = new Email(rs.getInt("idMail"),getUserNameDB(rs.getInt("idExpediteur")), getUserNameDB(rs.getInt("idRecepteur")),rs.getString("titre"), rs.getString("texte"), rs.getInt("lu"));
  		
  			return email;
  		
 		}catch (SQLException e) {
-
 			System.out.println(e.getMessage());
 
 		}
@@ -595,11 +619,11 @@ public class DirectoryManager {
 * @param readingRight the value we want for the reading right of the user for this mailing list
 * @param writingRight the value we want for the writing right of the user for this mailing list
 */
-	public static void setReadDB(Email email){
+	public static void setReadDB(int idmail){
 		Statement s;		
 		try{
 			s = c.createStatement();
-			s.executeUpdate("UPDATE mail SET lu = 1 WHERE idRecepteur = "+getUserIdDB(email.getReceiver())+" AND idExpediteur = "+getUserIdDB(email.getSender())+" AND titre = '"+email.getTitre()+"' AND texte = '"+email.getBody()+"'");
+			s.executeUpdate("UPDATE mail SET lu = 1 WHERE idMail = "+idmail);
 
 		}catch (SQLException e) {
 			System.out.println(e.getMessage());

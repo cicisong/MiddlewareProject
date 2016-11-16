@@ -12,6 +12,7 @@ import java.util.Collection;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Email {
 
+	int id;
 	String sender;
 	String receiver;
 	String titre;
@@ -19,10 +20,11 @@ public class Email {
 	int lu;
 	
 	public Email(){
-			this.sender = "totot";
+		
 	}
 	
-	public Email(String sender, String receiver, String titre, String body, int lu){
+	public Email(int id,String sender, String receiver, String titre, String body, int lu){
+		this.id = id;
 		this.sender = sender;
 		this.receiver = receiver;
 		this.titre = titre;
@@ -30,6 +32,10 @@ public class Email {
 		this.lu = lu;	
 	}
 	
+	
+	public int getId(){
+		return this.id;
+	}
 	public String getSender(){
 		return this.sender;
 	}

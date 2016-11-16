@@ -15,20 +15,17 @@ import java.util.HashMap;
 
 @XmlRootElement        
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Emails {
-    @XmlElementWrapper(name = "emails")  @XmlElement(name="emails") ArrayList<Email> emails=new ArrayList<Email>();
+public class ListeString {
+    @XmlElementWrapper(name = "liste")  @XmlElement(name="liste") ArrayList<String>liste=new ArrayList<String>();
 	
-    public Emails(){}
+    public ListeString(){}
 
-    public Emails(ArrayList<Email> emails){
-		this.emails=emails;
+    public ListeString(ArrayList<String>liste){
+		this.liste=liste;
 	}
         
-	public void createEmail(Email email){
-		this.emails.add(email);
-	}
-	public ArrayList<Email> getEmails(){
-		return this.emails;
+	public void createListeString(String name){
+		this.liste.add(name);
 	}
 
 
